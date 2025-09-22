@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.joysistvi.util.dbconnection;
+package com.joysistvi.libms.main;
 
+import com.joysistvi.libms.function.Book;
+import com.joysistvi.libms.function.User;
+import com.joysistvi.libms.dbconnection.DbConnection;
 import java.util.Scanner;
 
 /**
@@ -16,12 +19,8 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         DbConnection dbConnect = new DbConnection();
-//        System.out.println("Search Book Title: ");
-//        String bookTitle = scanner.nextLine();
-//        
-//
-       Book book = new Book(scanner, dbConnect);
-       book.readBooksWithFullDetails();
 
+        User user = new User(dbConnect, scanner);
+        user.logInUser();
     }
 }

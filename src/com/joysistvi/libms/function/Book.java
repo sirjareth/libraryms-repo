@@ -3,18 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.joysistvi.util.dbconnection;
+package com.joysistvi.libms.function;
 
+import com.joysistvi.libms.dbconnection.DbConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Scanner;
 
-/**
- *
- * @author Yuno
- */
+//tblbooks
 public class Book {
 
     Scanner scanner;
@@ -23,6 +21,50 @@ public class Book {
     public Book(Scanner scanner, DbConnection dbConnection) {
         this.scanner = scanner;
         this.dbConnection = dbConnection;
+    }
+    
+    
+    public void bookDashBoard() {
+        boolean running = true;
+        while (running) { // Manage Books
+            System.out.println("---------- Please select ----------");
+            System.out.println("    [1] View Books");
+            System.out.println("    [2] Search Books");
+            System.out.println("    [3] Add Books");
+            System.out.println("    [4] Update Books");
+            System.out.println("    [5] Archive Books");
+            System.out.println("    [6] Delete Books");
+            System.out.println("    [7] Retrieve Books");
+            System.out.println("    [8] Back");
+            System.out.println("    [0] Exit");
+            System.out.println("Enter a choice: ");
+
+            try {
+                int choice = scanner.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        readBooksWithFullDetails();
+                        break;
+                    case 2:
+                        
+                        break;
+                    case 3:
+                        
+
+                        break;
+                    case 4:
+                        
+                        break;
+                    case 5:
+                        
+                        break;
+                    case 0:
+                        running = false;
+                }
+            } catch (Exception e) {
+            }
+        }
     }
 
     // CRUD Operation
@@ -53,8 +95,8 @@ public class Book {
             System.out.println(e.getMessage());
         }
     }
-    
-     // Books Inner Join Authors & Publishers
+
+    // Books Inner Join Authors & Publishers
     public void readBooksUsingInnerJoin() {
         String query = "SELECT tblbooks.book_id, tblbooks.book_title, tblauthors.author_name, tblpublishers.pub_name "
                 + "FROM tblbooks "
@@ -76,7 +118,6 @@ public class Book {
                 String bookTitle = result.getString("book_title");
                 String authorName = result.getString("author_name");
                 String pubName = result.getString("pub_name");
-                
 
                 System.out.printf("| %-8d | %-30s | %-30s | %-30s |%n",
                         bookId, bookTitle, authorName, pubName);
@@ -86,7 +127,7 @@ public class Book {
             System.out.println(e.getMessage());
         }
     }
-    
+
     // Books Inner Join Authors & Publishers & Editions
     public void readBooksWithFullDetails() {
         String query = "SELECT b.book_id, b.book_title, a.author_name, p.pub_name, e.edition_number, e.edition_year, e.pages "
@@ -152,19 +193,27 @@ public class Book {
         }
     }
 
-    public void createBooks(String bookTitle, int authorId, int pubId, int editionYr, int pages) {
-        String query = "INSERT INTO tblbooks (book_title, author_id, pub_id, edition_year, pages) "
-                + "VALUES (?,?,?,?,?)"; // Anti SQL Injection
+    public void createBooks() {
+        System.out.println("--------- Add Books ---------");
+        System.out.print("Enter your Book Title: ");
+        String bookTitle = scanner.nextLine();
+
+        System.out.print("Enter Author ID: ");
+        int bookAuthorId = scanner.nextInt();
+
+        System.out.print("Enter Publisher ID: ");
+        int bookPublisherId = scanner.nextInt();
+
+        String query = "INSERT INTO tblbooks (book_title, author_id, pub_id) "
+                + "VALUES (?,?,?)"; // Anti SQL Injection
 
         try (Connection connect = dbConnection.connect();
                 PreparedStatement prep = connect.prepareStatement(query)) {
 
             //  wildcards = parameter
             prep.setString(1, bookTitle);
-            prep.setInt(2, authorId);
-            prep.setInt(3, pubId);
-            prep.setInt(4, editionYr);
-            prep.setInt(5, pages);
+            prep.setInt(2, bookAuthorId);
+            prep.setInt(3, bookPublisherId);
             prep.executeUpdate();
 
             System.out.println("Book " + bookTitle + " added successfully!\n");
@@ -243,7 +292,7 @@ public class Book {
     }
 
     public void searchBooks(String bookTitleKW) {
-        String query = "SELECT * FROM tblbooks WHERE book_title LIKE Mockingb AND isArchived = 0";
+        String query = "SELECT * FROM tblbooks WHERE book_title LIKE ? AND isArchived = 0";
 
         try (Connection connect = dbConnection.connect();
                 PreparedStatement prep = connect.prepareStatement(query);) {
@@ -271,6 +320,7 @@ public class Book {
         }
     }
 
+    
 }
 
 // Project Criteria -> Users Table -> Dashboard
